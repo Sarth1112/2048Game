@@ -5,18 +5,18 @@ class Game2048:
     def __init__(self, master):
         self.master = master
         self.master.title("2048")
-        self.master.geometry("500x500")
+        self.master.geometry("500x600")  # Increased height to accommodate score label
         self.master.bind("<Key>", self.handle_key)
 
         self.grid_size = 4
         self.grid = [[0] * self.grid_size for _ in range(self.grid_size)]
         self.score = 0
 
-        self.init_grid()
+        self.init_ui()
         self.add_tile()
         self.update_grid()
 
-    def init_grid(self):
+    def init_ui(self):
         self.tiles = []
         for i in range(self.grid_size):
             row = []
@@ -25,6 +25,9 @@ class Game2048:
                 tile.grid(row=i, column=j, padx=10, pady=10)
                 row.append(tile)
             self.tiles.append(row)
+
+        self.score_label = tk.Label(self.master, text=f"Score: {self.score}", font=("Helvetica", 24, "bold"))
+        self.score_label.grid(row=self.grid_size, column=0, columnspan=self.grid_size)
 
     def add_tile(self):
         empty_cells = [(i, j) for i in range(self.grid_size) for j in range(self.grid_size) if self.grid[i][j] == 0]
@@ -53,6 +56,8 @@ class Game2048:
                 value = self.grid[i][j]
                 color, bg_color = color_map.get(value, ("#f9f6f2", "#3c3a32"))
                 self.tiles[i][j].configure(text=str(value) if value != 0 else "", fg=color, bg=bg_color)
+        
+        self.score_label.configure(text=f"Score: {self.score}")
         self.master.update_idletasks()
 
     def handle_key(self, event):
